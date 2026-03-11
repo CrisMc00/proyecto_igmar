@@ -4,7 +4,7 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
-echo "Aqui es el puerto 8000";
+echo "Aqui es el puerto 8080";
 /*
 |--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance
