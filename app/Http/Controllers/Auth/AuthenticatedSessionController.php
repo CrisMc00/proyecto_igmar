@@ -29,7 +29,16 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $user = Auth::user();
+
+        // Si el usuario NUNCA ha configurado Google Authenticator (no tiene secreto)
+        if (!$user->google2fa_secret) {
+            return redirect()->route('2fa.setup');
+        }
+
+        // Si ya tiene secreto, lo mandamos a pedir el código de 6 dígitos
+        return redirect()->route('otp.verify');
+        //return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**

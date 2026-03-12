@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('otp_codes', function (Blueprint $table) {
-            $table->id();
-            $table->string('email')->index();
-            $table->string('code');
-            $table->timestamp('expires_at');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->text('google2fa_secret')->nullable();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('otp_codes');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('google2fa_secret');
+        });
     }
 };
