@@ -24,6 +24,15 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
+        <div class="mt-4">
+            {!! NoCaptcha::display() !!}
+            @if ($errors->has('g-recaptcha-response'))
+                <span class="text-sm text-red-600 dark:text-red-400 mt-2">
+                    {{ $errors->first('g-recaptcha-response') }}
+                </span>
+            @endif
+        </div>
+
         <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
