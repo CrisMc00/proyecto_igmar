@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class LoginRequest extends FormRequest
 {
@@ -50,6 +51,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $code = rand(100000, 999999);
+        DB::table('otp_codes')->updateOrInsert(
+            ['email' => $this->email],
+            ['code' => $code, 'expires_at' => now()->addMinutes(15), 'created_at' => now()]
+        );
+
+        \Illuminate\Support\Facades\Mail::to($this->email)->send(new \App\Mail\OtpMail($code));
+        
+        session(['otp_email' => $this->email]); 
         RateLimiter::clear($this->throttleKey());
     }
 
