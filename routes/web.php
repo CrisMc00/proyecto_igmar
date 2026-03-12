@@ -19,9 +19,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/*
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+*/
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -29,13 +31,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Ruta para mostrar el formulario de los 6 números
-Route::get('/verify-otp', [OtpController::class, 'show'])->name('otp.verify');
-
-// Ruta para procesar el código enviado
-Route::post('/verify-otp', [OtpController::class, 'verify'])->name('otp.post');
-
-// Ruta para la configuración inicial (QR)
-Route::get('/setup-2fa', [TwoFactorController::class, 'showSetup'])->name('2fa.setup');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/setup-2fa', [TwoFactorController::class, 'showSetup'])->name('2fa.setup');
+    Route::get('/verify-otp', [OtpController::class, 'show'])->name('otp.verify');
+    Route::post('/verify-otp', [OtpController::class, 'verify'])->name('otp.post');
+    
+    // Rutas protegidas por el código
+    Route::middleware(['2fa'])->group(function () {
+        Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
+    });
+});
 
 require __DIR__.'/auth.php';

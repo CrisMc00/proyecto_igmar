@@ -1,14 +1,9 @@
 <x-guest-layout>
     <div class="text-center">
-        <h2 class="mb-4">Configurar Google Authenticator</h2>
-        <p>Escanea este código QR con tu aplicación:</p>
-        
+        <h2>Escanea este código con tu App</h2>
         <div class="flex justify-center my-4">
             {!! QrCode::size(200)->generate($qr_url) !!}
         </div>
-
-        <p class="text-sm">Una vez escaneado, presiona continuar para verificar.</p>
-        
-        <a href="{{ route('otp.verify') }}" class="underline text-blue-600">Continuar</a>
+        <a href="{{ route('otp.verify') }}" class="btn btn-primary">Continuar</a>
     </div>
 </x-guest-layout>
