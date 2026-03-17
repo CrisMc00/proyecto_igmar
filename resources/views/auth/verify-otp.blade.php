@@ -2,6 +2,9 @@
     <form method="POST" action="{{ route('otp.post') }}">
         @csrf
         <input type="text" name="code" placeholder="Código de 6 dígitos" required>
+        @error('code')
+            <p style="color: red;">{{ $message }}</p>
+        @enderror
         <button type="submit">Verificar</button>
     </form>
 </x-guest-layout>
