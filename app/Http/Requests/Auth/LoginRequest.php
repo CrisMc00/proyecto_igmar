@@ -43,13 +43,18 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = $this->only('email', 'password');
+
+        if (! Auth::validate($credentials)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
+
+        $user = Auth::getLastAttempted();
+        session(['2fa_user_id' => $user->id]);
 
         RateLimiter::clear($this->throttleKey());
     }

@@ -31,15 +31,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/setup-2fa', [TwoFactorController::class, 'showSetup'])->name('2fa.setup');
+Route::get('/verify-otp', [OtpController::class, 'show'])->name('otp.verify');
+Route::post('/verify-otp', [OtpController::class, 'verify'])->name('otp.post');
+
+// Rutas protegidas por el código
 Route::middleware(['auth'])->group(function () {
-    Route::get('/setup-2fa', [TwoFactorController::class, 'showSetup'])->name('2fa.setup');
-    Route::get('/verify-otp', [OtpController::class, 'show'])->name('otp.verify');
-    Route::post('/verify-otp', [OtpController::class, 'verify'])->name('otp.post');
-    
-    // Rutas protegidas por el código
-    Route::middleware(['2fa'])->group(function () {
-        Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
-    });
+    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
 });
 
 require __DIR__.'/auth.php';

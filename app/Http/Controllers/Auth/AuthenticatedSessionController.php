@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
+        $user = \App\Models\User::find(session('2fa_user_id'));
 
         // Si el usuario NUNCA ha configurado Google Authenticator (no tiene secreto)
         if (!$user->google2fa_secret) {
@@ -48,6 +48,7 @@ class AuthenticatedSessionController extends Controller
     {
         Auth::guard('web')->logout();
 
+        $request->session()->forget('2fa_user_id');
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
