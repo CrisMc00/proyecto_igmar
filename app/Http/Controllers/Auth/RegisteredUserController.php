@@ -45,8 +45,12 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        //Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        //return redirect(RouteServiceProvider::HOME);
+
+        session(['2fa_user_id' => $user->id]);
+
+        return redirect()->route('2fa.setup');
     }
 }

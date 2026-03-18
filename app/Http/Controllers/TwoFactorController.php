@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class TwoFactorController extends Controller
 {
     public function showSetup() {
+        if (!session()->has('2fa_user_id')) {
+            return redirect()->route('login');
+        }
         $user = \App\Models\User::find(session('2fa_user_id'));
         if (!$user->google2fa_secret) {
             $user->google2fa_secret = Google2FA::generateSecretKey();
