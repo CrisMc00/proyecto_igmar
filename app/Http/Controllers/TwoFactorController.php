@@ -9,15 +9,16 @@ use Illuminate\Support\Facades\Auth;
 class TwoFactorController extends Controller
 {
     public function showSetup() {
-        if (!session()->has('2fa_user_id')) {
-            return redirect()->route('login');
-        }
         $user = \App\Models\User::find(session('2fa_user_id'));
+        
         if (!$user->google2fa_secret) {
-            $user->google2fa_secret = Google2FA::generateSecretKey();
-            $user->save();
+            $secret = Google2FA::generateSecretKey();
+            session(['temp_2fa_secret' => $secret]); // Guardar temporalmente
+        } else {
+            $secret = $user->google2fa_secret;
         }
-        $qr_url = Google2FA::getQRCodeUrl('Sistema Igmar', $user->email, $user->google2fa_secret);
+
+        $qr_url = Google2FA::getQRCodeUrl('Sistema Igmar', $user->email, $secret);
         return view('auth.setup-2fa', compact('qr_url'));
     }
 }
