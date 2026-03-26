@@ -31,14 +31,20 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()
+                                                        ->mixedCase()
+                                                        ->numbers()
+                                                        ->symbols()
+                                                        ->uncompromised()],
             'g-recaptcha-response' => ['required', 'captcha'],
         ]);
 
+        $cleanName = strip_tags($request->name);
+
         $user = User::create([
-            'name' => $request->name,
+            'name' => $cleanName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
